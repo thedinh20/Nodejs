@@ -1,0 +1,115 @@
+import { chatService } from "@/services/chatService";
+import type { ChatState } from "@/types/store";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { useAuthStore } from "./useAuthStore";
+
+
+export const useChatStore = create<ChatState>()(
+    persist(
+        (set, get) => ({
+            conversations: [],
+            messages: {},
+            activeConversationId: null,
+            convoLoading: false,
+            messageLoading: false,
+
+            setActiveConversation: (id) => {
+                set({ activeConversationId: id });
+            },
+            reset: () => {
+                set({
+                    conversations: [],
+                    messages: {},
+                    activeConversationId: null,
+                    convoLoading: false,
+                    messageLoading: false,
+                });
+            },
+            fetchConversations: async () => {
+                try {
+                    set({ convoLoading: true });
+                    const { conversations} = await chatService.fetchConversations();
+                    set({ conversations, convoLoading: false });
+                } catch (error) {
+                    console.error("Failed to fetch conversations:", error);
+                    set({ convoLoading: false });
+                } 
+                // finally {
+                //     set({ loading: false });
+                // }
+            },
+            fetchMessages: async (conversationId) => {
+                const {activeConversationId, messages} = get();
+                const {user} = useAuthStore.getState();
+
+                const convoId = conversationId ?? activeConversationId;
+
+                if (!convoId) return;
+
+                const current = messages?.[convoId];
+                const nextCursor = current?.nextCursor === undefined ? "" : current.nextCursor;
+
+                if(nextCursor === null) return; // het du lieu
+                set({messageLoading: true}); 
+                try {
+                    const {message: fetched, cursor} =  await chatService.fetchMessages(convoId, nextCursor);
+
+                    const processed = fetched.map((m) => ({
+                        ...m,
+                        isOwn: m.senderId === user?._id,
+                    }));
+
+                    set((state) => {
+                        const prev = state.messages[convoId]?.items ?? [];
+                        const merrged = prev.length > 0 ?  [...processed, ...prev] : processed;
+                        return {
+                            messages: {
+                                ...state.messages,
+                                [convoId]: { 
+                                    items: merrged,
+                                    hasMore: !!cursor,
+                                    nextCursor: cursor ?? null,
+                            }}
+                        };
+                    })
+                } catch (error) {
+                    console.error("Failed to fetch messages:", error);
+                    
+                } finally {
+                    set({messageLoading: false});
+            }
+        },
+        sendDirectMessage: async (recipientId, content, imgUrl) => {
+            try {
+                const {activeConversationId} = get();
+                await chatService.sendDirectMessage(recipientId, content, imgUrl, activeConversationId || undefined);
+
+                set((state) => ({
+                    conversations: state.conversations.map((c) => 
+                        c._id === activeConversationId ? {...c, seenBy: []} : c ),
+                }));
+            } catch (error) {
+                console.error("Loi xay ra khi gui direct message", error);
+            }
+        },
+        sendGroupMessage: async (conversationId, content, imgUrl) => {
+            try {
+                await chatService.sendGroupMessage(conversationId, content, imgUrl);
+                set((state) => ({
+                    conversations: state.conversations.map((c) => 
+                    c._id === get().activeConversationId ? {...c, seenBy: []} : c
+                    ),
+                }))
+            } catch (error) {
+                console.error("Loi xay ra khi gui group message", error);
+            }
+
+        }
+    }),
+    {
+        name: 'chat-storage',
+        partialize: (state) => ({conversations: state.conversations}),
+    }
+    )
+)
