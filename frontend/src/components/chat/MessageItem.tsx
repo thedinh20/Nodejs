@@ -21,7 +21,7 @@ const MessageItem = ({message, index, messages,selectedConvo, lastMessageStatus}
         const participant = selectedConvo.participants.find((p: Participant) => p._id.toString() === message.senderId.toString());
   return (
     <div className={cn(
-        "flex gap-2 message-bounce",
+        "flex gap-2 message-bounce mt-2",
         message.isOwn ? "justify-end" : "justify-start"
     )}>
         {/* avatar */}

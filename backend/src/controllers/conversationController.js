@@ -149,3 +149,16 @@ export const  getMessages = async (req, res) => {
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
+
+export const getUserConversationForSockerIO = async (userId) => {
+  try {
+    const conversations = await Conversation.find(
+      {"participants.userId": userId},
+      {_id: 1}
+    );
+    return conversations.map((c) => c._id.toString());
+  } catch (error) {
+    console.error("Loi khi fetch conversation: ", error);
+    return [];
+  }
+}
