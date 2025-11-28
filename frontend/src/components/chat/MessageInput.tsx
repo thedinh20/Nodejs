@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/stores/useAuthStore"
 import type { Conversation } from "@/types/chat";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { ImagePlus, Send } from "lucide-react";
 import { Input } from "../ui/input";
@@ -18,23 +18,29 @@ const MessageInput = ({selectedConvo} : {selectedConvo: Conversation}) => {
 
   const sendMessage = async () => {
     if(!value.trim()) return;
+    const currrValue = value;
+    setValue("");
 
     try {
       if(selectedConvo.type === "direct") {
         const participants = selectedConvo.participants;
         const otherUser = participants.filter((p) => p._id !== user._id)[0];
-        await sendDirectMessage(otherUser._id, value)
+        await sendDirectMessage(otherUser._id, currrValue)
       } else {
-        await sendGroupMessage(selectedConvo._id, value);
+        await sendGroupMessage(selectedConvo._id, currrValue);
       }
       } catch (error) {
         console.error(error);
         toast.error("Loi xay ra khi gui tin nhan. Ban hay thu lai!")
-    } finally {
-      setValue("");
-    }
+    } 
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent )=> {
+    if(e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
 
   return (
     <div className="flex items-center gap-2 p-3 min-h-[56px] bg-background">
@@ -43,7 +49,7 @@ const MessageInput = ({selectedConvo} : {selectedConvo: Conversation}) => {
       </Button>
       <div className="flex-1 relative">
         <Input 
-          value={value}
+          onKeyPress={handleKeyPress}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Soan tin nhan..."
           className="pr-20 h-9 bg-white border-border/50 focus:border-primary/50 transition-smooth resize-none" 
