@@ -122,8 +122,9 @@ export const  getMessages = async (req, res) => {
 
     const query = { conversationId };
 
+    // Fix typo: should be createdAt, not createAt
     if (cursor) {
-      query.createAt = { $lt: new Date(cursor) };
+      query.createdAt = { $lt: new Date(cursor) };
     }
 
     let messages = await Message.find(query)
@@ -134,7 +135,8 @@ export const  getMessages = async (req, res) => {
 
     if (messages.length > Number(limit)) {
       const nextMessage = messages[messages.length - 1];
-      nextCursor = nextMessage.createdAt.toISOtring();
+      // Fix typo: toISOString, not toISOtring
+      nextCursor = nextMessage.createdAt.toISOString();
       messages.pop();
     }
 
