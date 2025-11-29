@@ -76,19 +76,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       {/* Content */}
       <SidebarContent className="beatifull-scrollbar">
-        {/* New chat */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <CreateNewChat/>
-          </SidebarGroupContent>
-
-        </SidebarGroup>
-
         {/* Tab content */}
         {activeTab === 'group' && (
           <SidebarGroup>
             <SidebarGroupLabel className="uppercase">
-              Nhom chat
+              Tin nhắn nhóm
             </SidebarGroupLabel>
             <SidebarGroupAction title="Tao Nhom" className="cursor-pointer">
               <NewGroupChatModal/>
@@ -99,23 +91,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         )}
         {activeTab === 'direct' && (
-          <SidebarGroup>
-            <SidebarGroupLabel className="uppercase">
-              Ban be
-            </SidebarGroupLabel>
-            <SidebarGroupAction title="Ket Ban" className="cursor-pointer">
-              <AddFriendModal/>
-            </SidebarGroupAction>
-            <SidebarGroupContent className="mt-3">
-              <DirecMessageList/>
-            </SidebarGroupContent>
-          </SidebarGroup>
+          <>
+            <SidebarGroup>
+              <SidebarGroupContent>
+                <CreateNewChat/>
+              </SidebarGroupContent>
+            </SidebarGroup>
+            <SidebarGroup>
+              <SidebarGroupLabel className="uppercase">
+                  Tin nhắn cá nhân
+              </SidebarGroupLabel>
+              <SidebarGroupContent className="mt-3">
+                <DirecMessageList/>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </>
         )}
         {activeTab === 'request' && (
           <SidebarGroup>
             <SidebarGroupLabel className="uppercase">
               Yêu cầu kết bạn
             </SidebarGroupLabel>
+            <SidebarGroupAction title="Ket Ban" className="cursor-pointer">
+              <AddFriendModal/>
+            </SidebarGroupAction>
             <SidebarGroupContent className="mt-3">
               <FriendRequestList/>
             </SidebarGroupContent>

@@ -1,6 +1,12 @@
-﻿import axios from '@/lib/axios';
+﻿import api from '@/lib/axios';
+import type { Friend } from '@/types/user';
 
 export async function sendFriendRequest(userId: string, message: string) {
-  return axios.post('/friends/requests', { to: userId, message: message });
+  return api.post('/friends/requests', { to: userId, message: message });
+}
+
+export async function getAllFriends(): Promise<Friend[]> {
+  const res = await api.get('/friends');
+  return res.data.friends;
 }
 

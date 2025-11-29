@@ -18,6 +18,7 @@ import { sendFriendRequest } from '@/services/friendService'
 import type { User } from "@/types/user"
 import { toast } from "sonner"
 import axios from 'axios'
+import { useChatStore } from '@/stores/useChatStroe';
 
 const AddFriendModal = () => {
   const [searchKey, setSearchKey] = useState("")
@@ -29,6 +30,7 @@ const AddFriendModal = () => {
   const [sending, setSending] = useState(false)
   const [open, setOpen] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const { fetchFriendRequests } = useChatStore();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -65,18 +67,16 @@ const AddFriendModal = () => {
     setSending(true)
     try {
       await sendFriendRequest(selectedUser._id, greeting)
+      toast.success("Gửi lời mời kết bạn thành công!")
+      fetchFriendRequests();
       setOpen(false)
-      setTimeout(() => {
-        toast.success("Gửi lời mời kết bạn thành công!")
-        handleDialogClose()
-      }, 300)
+      setTimeout(() => handleDialogClose(), 300)
     } catch (err) {
       if (axios.isAxiosError(err)) {
         toast.error(err.response?.data?.message || "Gửi lời mời thất bại")
       } else {
         toast.error("Gửi lời mời thất bại")
       }
-      // Do NOT close modal on error
     } finally {
       setSending(false)
     }

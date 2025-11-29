@@ -6,18 +6,22 @@ import {io} from "../socket/index.js";
 
 export const sendDirectMessage = async (req, res) => {
   try {
-    const { recipientId, content, conversationId } = req.body;
+    const { recipientId, content } = req.body;
     const senderId = req.user._id;
-
-    let conversation;
 
     if (!content) {
       return res.status(400).json({ message: "Thiếu nội dung" });
     }
 
-    if (conversationId) {
-      conversation = await Conversation.findById(conversationId);
-    }
+    // Tìm đoạn chat cá nhân giữa 2 người (không quan tâm thứ tự)
+    let conversation = await Conversation.findOne({
+      type: "direct",
+      $and: [
+        { "participants.userId": senderId },
+        { "participants.userId": recipientId },
+      ],
+      $expr: { $eq: [ { $size: "$participants" }, 2 ] },
+    });
 
     if (!conversation) {
       conversation = await Conversation.create({

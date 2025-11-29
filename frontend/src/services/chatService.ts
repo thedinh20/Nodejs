@@ -19,9 +19,9 @@ export const chatService = {
     return {message: res.data.messages, cursor: res.data.nextCursor  };
   },
 
-  async sendDirectMessage(recipientId: string, content: string = "", imgUrl?: string, conversationId?: string ) {
+  async sendDirectMessage(recipientId: string, content: string = "") {
     const res = await api.post("/messages/direct", {
-      recipientId, content, imgUrl, conversationId
+      recipientId: recipientId, content: content,
     })
 
     return res.data.message
