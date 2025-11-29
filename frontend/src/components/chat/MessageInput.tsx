@@ -32,7 +32,9 @@ const MessageInput = ({selectedConvo} : {selectedConvo: Conversation}) => {
       } catch (error) {
         console.error(error);
         toast.error("Loi xay ra khi gui tin nhan. Ban hay thu lai!")
-    } 
+    } finally {
+      setValue("");
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent )=> {
@@ -50,6 +52,7 @@ const MessageInput = ({selectedConvo} : {selectedConvo: Conversation}) => {
       <div className="flex-1 relative">
         <Input 
           onKeyPress={handleKeyPress}
+          value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="Soan tin nhan..."
           className="pr-20 h-9 bg-white border-border/50 focus:border-primary/50 transition-smooth resize-none" 

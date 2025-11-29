@@ -9,14 +9,14 @@ import MessageInput from "./MessageInput";
 
 
 const ChatWindowLayout = () => {
-  const {activeConversationId, conversations, messageLoading: loaning, messages} = useChatStore();
+  const {activeConversationId, conversations, messageLoading: loanding, messages} = useChatStore();
   const selectedConvo = conversations.find((c) => c._id === activeConversationId) ?? null;
 
   if(!selectedConvo) {
     return <ChatWelcomeScreen />;
   }
 
-  if(loaning ) {
+  if(loanding ) {
     return <ChatWindowSkeleton />;
   }
 

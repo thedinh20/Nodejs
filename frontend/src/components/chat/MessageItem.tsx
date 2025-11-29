@@ -2,7 +2,7 @@ import { cn, formatMessageTime } from "@/lib/utils";
 import type { Conversation ,Message, Participant} from "@/types/chat";
 import UserAvatar from "./UserAvatar";
 import { Card } from "../ui/card";
-import { Badge } from "lucide-react";
+import { Badge } from "../ui/badge";
 
 interface MessageItemProps {
     message: Message;

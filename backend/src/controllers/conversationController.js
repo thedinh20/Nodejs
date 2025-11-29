@@ -123,7 +123,7 @@ export const  getMessages = async (req, res) => {
     const query = { conversationId };
 
     if (cursor) {
-      query.createAt = { $lt: new Date(cursor) };
+      query.createdAt = { $lt: new Date(cursor) };
     }
 
     let messages = await Message.find(query)
