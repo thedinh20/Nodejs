@@ -27,7 +27,7 @@ function App() {
 
   return (
   <>
-    <Toaster richColors/>
+    <Toaster richColors position={'top-right'}/>
     <BrowserRouter> 
       <Routes>
         {/* public routes */}

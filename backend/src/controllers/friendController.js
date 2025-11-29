@@ -41,8 +41,11 @@ export const sendFriendRequest = async (req, res) => {
       return res.status(400).json({ message: "Hai người đã là bạn bè" });
     }
 
-    if (existingRequest) {
-      return res.status(400).json({ message: "Đã có lời mời kết bạn đang chờ" });
+    if (existingRequest && existingRequest.status === "pending") {
+        return res.status(400).json({message: "Đã có lời mời kết bạn đang chờ"});
+    }
+    else if (existingRequest && existingRequest.status === "accepted") {
+        return res.status(400).json({message: "Hai người đã là bạn bè"});
     }
 
     const request = await FriendRequest.create({
@@ -77,12 +80,15 @@ export const acceptFriendRequest = async (req, res) => {
         .json({ message: "Bạn không có quyền chấp nhận lời mời này" });
     }
 
+    // Update the status to 'accepted' instead of deleting
+    request.status = 'accepted';
+    await request.save();
+
     const friend = await Friend.create({
       userA: request.from,
       userB: request.to,
     });
 
-    await FriendRequest.findByIdAndDelete(requestId);
 
     const from = await User.findById(request.from)
       .select("_id displayName avatarUrl")

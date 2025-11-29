@@ -10,13 +10,15 @@ import cookieParser from 'cookie-parser';
 import { protectedRoute } from './middlewares/authMiddleware.js';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
-import fs from 'fs';
 import {app , server} from "./socket/index.js";
-
+import swaggerSpec from './swagger.js';
 dotenv.config();
 
 // const app = express();
 const PORT = process.env.PORT || 5001;
+
+// Swagger UI
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // middleware
 app.use(express.json());
@@ -26,10 +28,6 @@ app.use(cors({
     credentials: true,
 }));
 
-// swagger
-const swaggerDocument = JSON.parse(fs.readFileSync("./src/swagger.json", "utf8"));
-
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // public routes
 app.use("/api/auth", authRoute);
@@ -40,6 +38,7 @@ app.use("/api/users", userRoute);
 app.use("/api/friends", friendRoute);
 app.use("/api/messages", messageRoute);
 app.use("/api/conversations", conversationRoute)
+
 
 connectDB().then(() => {
     server.listen(PORT, () => {

@@ -11,7 +11,7 @@ const ChatWelcomeScreen = () => {
                     <span className="text-3xl">...</span>
                 </div>
                 <h2 className="text-2xl font-bold mb-2 bg-gradient-chat bg-clip-text text-transparent">Chao mmung ban den voi Moji!</h2>
-                <p className="text-muted-forground">Chon mot cuoc hoi thoai de bat dau chat</p>
+                <p className="text-muted-foreground">Chon mot cuoc hoi thoai de bat dau chat</p>
             </div>
         </div>
     </SidebarInset>

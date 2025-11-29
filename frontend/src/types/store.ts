@@ -1,6 +1,7 @@
 import type { Socket } from "socket.io-client";
 import type { Conversation, Message } from "./chat";
-import type { Friend, User } from "./user";
+import type { User } from "./user";
+import type { FriendRequests } from "./friend";
 
 export interface AuthState {
     accessToken: string | null;
@@ -41,7 +42,7 @@ export interface ChatState {
         items: Message[];
         hasMore: boolean; // infinite scroll
         nextCursor: string | null; // phan trang
-    }>; // key = conversationId, value = messages[]
+    }>;
     activeConversationId: string | null;
     convoLoading: boolean;
     messageLoading: boolean;
@@ -59,12 +60,11 @@ export interface ChatState {
         content: string,
         imgUrl?: string
     ) => Promise<void>;
-
-    // add message
     addMessage: (message: Message) => Promise<void>;
-    // update convo 
     updateConversation: (Conversation: Conversation) => void;
-    
+    // Friend requests
+    friendRequests: FriendRequests;
+    fetchFriendRequests: () => Promise<void>;
 }
 
 export interface SocketState {

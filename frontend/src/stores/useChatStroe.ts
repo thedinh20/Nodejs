@@ -3,6 +3,7 @@ import type { ChatState } from "@/types/store";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useAuthStore } from "./useAuthStore";
+import api from "@/lib/axios";
 
 
 export const useChatStore = create<ChatState>()(
@@ -13,7 +14,15 @@ export const useChatStore = create<ChatState>()(
             activeConversationId: null,
             convoLoading: false,
             messageLoading: false,
-
+            friendRequests: { sent: [], received: [] },
+            fetchFriendRequests: async () => {
+                try {
+                    const res = await api.get('/friends/requests');
+                    set({ friendRequests: res.data });
+                } catch {
+                    set({ friendRequests: { sent: [], received: [] } });
+                }
+            },
             setActiveConversation: (id) => {
                 set({ activeConversationId: id });
             },
@@ -148,7 +157,7 @@ export const useChatStore = create<ChatState>()(
                 conversations: state.conversations.map((c) => c._id === conversation._id ? {...c, ...conversation} : c),
             }))
         },
-        
+
     }),
     {
         name: 'chat-storage',

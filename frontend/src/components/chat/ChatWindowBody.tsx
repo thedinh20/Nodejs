@@ -15,14 +15,13 @@ const ChatWindowBody = () => {
 
   if(!messages?.length) {
     return (
-        <div className="flex h-full items-center justify-center text-muted-forground "
+        <div className="flex h-full items-center justify-center text-muted-foreground"
         > Chua co tin nhan nao trong cuoc tro chuyen nay</div>
     )
-
   }
 
   return (
-    <div className="p-4 bg-primary-foreground h-full flex flex-col overfolow-hidden">
+    <div className="p-4 bg-primary-foreground h-full flex flex-col overflow-hidden">
         <div className="flex flex-col overflow-y-auto overflow-x-hidden beatifull-scrollbar">
             {messages.map((message, index) => (
                 <MessageItem
