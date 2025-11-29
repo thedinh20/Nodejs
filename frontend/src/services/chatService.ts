@@ -32,5 +32,14 @@ export const chatService = {
       conversationId, content, imgUrl
     });
     return res.data.message;
+  },
+
+  async createGroupConversation(name: string, memberIds: string[]) {
+    const res = await api.post('/conversations', {
+      type: 'group',
+      name,
+      memberIds,
+    });
+    return res.data.conversation;
   }
 };

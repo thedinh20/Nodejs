@@ -71,7 +71,7 @@ export const useChatStore = create<ChatState>()(
 
                     set((state) => {
                         const prev = state.messages[convoId]?.items ?? [];
-                        const merrged = prev.length > 0 ?  [...processed, ...prev] : processed;
+                        const merrged = prev.length > 0 ?  [...prev, ...processed] : processed;
                         return {
                             messages: {
                                 ...state.messages,
@@ -140,7 +140,7 @@ export const useChatStore = create<ChatState>()(
                         messages: {
                             ...state.messages,
                             [convoId]: {
-                                items: [...prevItems, message],
+                                items: [message, ...prevItems], // Thêm vào đầu danh sách
                                 hasMore: state.messages[convoId].hasMore,
                                 nextCursor: state.messages[convoId].nextCursor ?? undefined,
                             },

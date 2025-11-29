@@ -118,7 +118,7 @@ export const  getConversations = async (req, res) => {
 export const  getMessages = async (req, res) => {
     try {
     const { conversationId } = req.params;
-    const { limit = 50, cursor } = req.query;
+    const { limit = 15, cursor } = req.query;
 
     const query = { conversationId };
 
@@ -140,7 +140,8 @@ export const  getMessages = async (req, res) => {
       messages.pop();
     }
 
-    messages = messages.reverse();
+    // KHÔNG đảo ngược mảng, giữ nguyên thứ tự DESC
+    // messages = messages.reverse();
 
     return res.status(200).json({
       messages,
