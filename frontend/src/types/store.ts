@@ -1,6 +1,6 @@
 import type { Socket } from "socket.io-client";
 import type { Conversation, Message } from "./chat";
-import type { User } from "./user";
+import type { Friend, User } from "./user";
 
 export interface AuthState {
     accessToken: string | null;
@@ -64,6 +64,7 @@ export interface ChatState {
     addMessage: (message: Message) => Promise<void>;
     // update convo 
     updateConversation: (Conversation: Conversation) => void;
+    
 }
 
 export interface SocketState {
